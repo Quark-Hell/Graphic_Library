@@ -28,32 +28,38 @@ public:
 public:
     __declspec(dllexport) static int SizeY;
 
-public:
-    __declspec(dllexport) static vector<string> Screen;
+//public:
+    //__declspec(dllexport) static vector<string> Screen;
+
+//public:
+    //__declspec(dllexport) static vector<vector<DWORD>> ScreenColour;
 
 public:
     __declspec(dllexport) ScreenClass(int sizeX,int sizeY) {
         ScreenClass::SizeX = sizeX;
         ScreenClass::SizeY = sizeY;
 
-        ScreenClass::Screen.clear();
+        //ScreenClass::Screen.clear();
 
-        Screen.resize(sizeY);
+        //Screen.resize(sizeY);
 
         for (size_t y = 0; y < sizeY; y++)
         {
             string str;
-            Screen.push_back(str);
+            //Screen.push_back(str);
+            //ScreenColour.resize(sizeY);
+            //ScreenColour[y].resize(sizeX);
+
             for (size_t x = 0; x < sizeX; x++)
             {
-                Screen[y].push_back(*" ");
+                //Screen[y].push_back(*" ");
             }
         }
     }
 };
 int ScreenClass::SizeX;
 int ScreenClass::SizeY;
-vector<string> ScreenClass::Screen;
+//vector<string> ScreenClass::Screen;
 
 
 class GameObject {
@@ -94,6 +100,8 @@ public:
 
 static class ConsoleInfo {
 public:
+    __declspec(dllexport) static WORD Attributes;
+public:
     __declspec(dllexport) static COORD GetConsoleCursorPosition()
     {
         HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -109,6 +117,7 @@ public:
             return invalid;
         }
     }
+
 public:
     __declspec(dllexport) static LPTSTR ReadConsoleOut(COORD coord) {
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
@@ -119,10 +128,31 @@ public:
         ReadConsoleOutputCharacter(hCon, lpCharacter, 1, GetConsoleCursorPosition(), &dwReaden);
         return lpCharacter;
     }
+
 public:
     __declspec(dllexport) static bool SetCursorPosition(COORD coord) {
         HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleCursorPosition(hCon, coord);
+        return true;
+    }
+
+public:
+    __declspec(dllexport) static bool SetConsoleColour(DWORD Colour) {
+        CONSOLE_SCREEN_BUFFER_INFO Info;
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        GetConsoleScreenBufferInfo(hStdout, &Info);
+        SetConsoleTextAttribute(hStdout, Colour);
+
+        return true;
+    }
+
+public:
+    __declspec(dllexport) static bool ResetConsoleColour() {
+        CONSOLE_SCREEN_BUFFER_INFO Info;
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        GetConsoleScreenBufferInfo(hStdout, &Info);
+        SetConsoleTextAttribute(hStdout, 15);
+
         return true;
     }
 
@@ -154,9 +184,9 @@ public:
         return true;
     }
 };
+WORD ConsoleInfo::Attributes;
 
 static class Draw {
-    WORD Attributes = 0;
 public:
     __declspec(dllexport) static void SetConsoleColour(DWORD Colour)
     {
@@ -164,11 +194,6 @@ public:
         HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
         GetConsoleScreenBufferInfo(hStdout, &Info);
         SetConsoleTextAttribute(hStdout, Colour);
-    }
-public:
-    __declspec(dllexport) static void ResetConsoleColour(WORD Attributes)
-    {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), Attributes);
     }
 
     /*
@@ -252,32 +277,37 @@ public:
                         if (x1 >= 0 && x2 >= 0 && x3 >= 0)
                         {
                             ConsoleInfo::SetCursorPosition(currentPos);
-                            ScreenClass::Screen[y][currentPos.X] = *"#";
-                            //printf("#");
+                            ConsoleInfo::SetConsoleColour(allObjects[z]->Color);
+                            //ScreenClass::ScreenColour[y][currentPos.X] = allObjects[z]->Color;
+                            //ScreenClass::Screen[y][currentPos.X] = *"#";
+                            printf("#");
                         }
                         else if(x1 <= 0 && x2 <= 0 && x3 <= 0)
                         {
                             ConsoleInfo::SetCursorPosition(currentPos);
-                            ScreenClass::Screen[y][currentPos.X] = *"#";
-                            //printf("#");
+                            ConsoleInfo::SetConsoleColour(allObjects[z]->Color);
+                            //ScreenClass::ScreenColour[y][currentPos.X] = allObjects[z]->Color;
+                            //ScreenClass::Screen[y][currentPos.X] = *"#";
+                            printf("#");
                         }
                     }
                 }
             }
         }
-
+           /*
         COORD crd;
         crd.X = 0;
         crd.Y = 0;
 
         for (size_t y = 0; y < ScreenClass::SizeY; y++)
         {
-            ConsoleInfo::SetCursorPosition(crd);
             printf("%s", ScreenClass::Screen[y].c_str());
             crd.Y++;
         }
+                    */
         return true;
     }
+
 
 public:
     __declspec(dllexport) static bool ClearScreen(char fill = ' ') {

@@ -46,10 +46,9 @@ extern "C" GRAPHICLIBRARY_API LPTSTR ReadConsoleOut(COORD coord);
 
 extern "C" GRAPHICLIBRARY_API bool SetCursorPosition(COORD coord);
 
-extern "C" GRAPHICLIBRARY_API WORD Attributes;
 extern "C" GRAPHICLIBRARY_API bool SetConsoleColour(DWORD Colour);
 
-extern "C" GRAPHICLIBRARY_API bool ResetConsoleColour(WORD Attributes);
+extern "C" GRAPHICLIBRARY_API bool ResetConsoleColour();
 
 extern "C" GRAPHICLIBRARY_API bool SetCharachterSize(int sizeX,int sizeY);
 
@@ -75,13 +74,19 @@ extern "C" GRAPHICLIBRARY_API void DrawString(string Texture, COORD coord = GetC
 
 /*---------------------------------Variables------------------------------------------------*/
 
+#pragma region ConsoleInfo Variables
+
+extern "C" GRAPHICLIBRARY_API WORD Attributes;
+
+#pragma endregion
+
 #pragma region Screen Variables
 
 extern "C" GRAPHICLIBRARY_API int SizeX;
 
 extern "C" GRAPHICLIBRARY_API int SizeY;
 
-extern "C" GRAPHICLIBRARY_API vector<string> Screen;
+//extern "C" GRAPHICLIBRARY_API vector<string> Screen;
 
 #pragma endregion
 
